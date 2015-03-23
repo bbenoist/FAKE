@@ -343,6 +343,25 @@ let tryFindFileOnPath (file : string) : string option =
     |> Seq.append ["."]
     |> fun path -> tryFindFile path file
 
+let tryFindFile' fileName directories =
+    directories
+    |> Seq.map trim
+    |> Seq.filter (fun d -> not (isNullOrEmpty d))
+    |> Seq.map (fun d -> d @@ fileName)
+    |> Seq.filter fileExists
+    |> Seq.cache
+
+let tryFindFileOnEnvironmentVariable' fileName variableName =
+    let fullName = fileName |> trim |> Environment.ExpandEnvironmentVariables |> trim
+    if isNullOrEmpty fullName then Seq.empty else
+    if fileExists fullName then seq [| fullName |] else
+    if not (DirectoryName fullName |> isNotNullOrEmpty) then Seq.empty else
+    (environVar "PATH").Split ([|Path.PathSeparator|], StringSplitOptions.RemoveEmptyEntries)
+    |> tryFindFile' fullName
+
+/// Tries to find the full executable file name from the PATH environment variable.
+let tryFindFileOnPath' fileName = tryFindFileOnEnvironmentVariable' fileName "PATH"
+
 /// Returns the AppSettings for the key - Splitted on ;
 /// [omit]
 let appSettings (key : string) (fallbackValue : string) = 
