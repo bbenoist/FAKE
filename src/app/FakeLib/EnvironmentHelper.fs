@@ -83,7 +83,7 @@ let ProgramFilesX86 =
     Environment.GetFolderPath Environment.SpecialFolder.ProgramFiles
 
 /// The system root environment variable. Typically "C:\Windows"
-let SystemRoot = Environment.SystemDirectory
+let SystemRoot = environVar "SystemRoot"
 
 /// Determines if the current system is an Unix system
 let isUnix = Environment.OSVersion.Platform = PlatformID.Unix
