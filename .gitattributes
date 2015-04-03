@@ -11,7 +11,7 @@
 *.dbproj merge=union
 
 # Custom for Vagrant
-*.sh diff=bash text=auto eol=lf
+*.sh text=auto eol=lf
 
 # Standard to msysgit
 *.doc diff=astextplain
